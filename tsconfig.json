@@ -1,0 +1,16 @@
+{
+  "ts-node": {
+    "esm": true
+  },
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "strict": true,
+    "target": "es6",
+    "module": "commonjs",
+    "sourceMap": true,
+    "skipLibCheck": false,
+    "esModuleInterop": true,
+    "moduleResolution": "node"
+  }
+}
