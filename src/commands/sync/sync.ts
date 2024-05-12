@@ -50,22 +50,57 @@ async function runSync(filepath: string) {
     transport: http(),
   }).extend(publicActions);
 
-  const blockNumber = await client.getBlockNumber();
-  console.log(`Current block number: ${blockNumber}`);
+  // const blockNumber = await client.getBlockNumber();
+  // console.log(`Current block number: ${blockNumber}`);
 
-  /* steps to execute
+  // deploy the contract
+  // command to deploy a contract with viem
 
-  execute:
-  - if a contract is deployed skip it
-  - if a contract is not deployed run txn
-  - update state object and record output to run log
-  - repeat for other not deployed contracts
+  const [address] = await client.getAddresses();
 
-  record output:
-  - save run log as a file
+  // Extract the ABI from the artifact details for 'gw01.json'
+  // @ts-ignore
+  const gw01Artifact = artifactDetails.find((artifact) =>
+    artifact.repo_url.includes("game-wallet")
+  );
+  if (!gw01Artifact) {
+    console.error("gw01.json artifact details not found.");
+    return;
+  }
+  const gw01Abi = gw01Artifact.abi;
+  const gw01Bytecode = gw01Artifact.bytecode.object;
+  if (!gw01Abi) {
+    console.error("ABI for gw01.json is missing.");
+    return;
+  }
+  console.log("Successfully retrieved ABI for gw01.json.");
 
-  ..
-  */
+  const hash = await client.deployContract({
+    abi: gw01Abi,
+    account: account,
+    bytecode: gw01Bytecode,
+    args: ["0x036CbD53842c5426634e7929541eC2318f3dCF7e", 1000000000, 60],
+  });
+  const transaction = await client.waitForTransactionReceipt({
+    hash: hash,
+  });
+
+  // record the contract address of the deployed contract
+  console.log(
+    `Deployed at txn: https://sepolia.basescan.org/address/${transaction.contractAddress}`
+  );
+
+  // update state file
+
+  // come up with a check to skip deployment on the same state file
+
+  // record output:
+  // - save run log as a file
+
+  // run auth configuration by executing function
+  // look at cannon invoke
+
+  // ability to loop
 }
 
 export { runSync };
