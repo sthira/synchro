@@ -3,17 +3,17 @@ import { createWalletClient, Hex, http, publicActions } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { baseSepolia } from "viem/chains";
 
-async function runSync(filepath: string) {
-  const stateFile = filepath;
+async function runSync(stateDir: string) {
+  const stateFile = stateDir + "/state.json";
   console.log("Reading state.json from: " + stateFile);
 
   // directories and files
-  const stateDir = require("path").dirname(filepath);
+  // const stateDir = require("path").dirname(stateDir);
   const artifactsDir = stateDir + "/artifacts";
   const logDir = stateDir + "/log";
 
   // read the state.json
-  const state = JSON.parse(fs.readFileSync(filepath, "utf8"));
+  const state = JSON.parse(fs.readFileSync(stateFile, "utf8"));
 
   // active contracts
   const activeContracts = state.contracts.active;

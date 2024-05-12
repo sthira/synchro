@@ -5,7 +5,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as figlet from "figlet";
 
-import { runSync } from "./commands/sync/sync";
+import { runSync } from "./commands/run/run";
 
 const program = new Command();
 
@@ -13,23 +13,19 @@ console.log(figlet.textSync("CHAIN SYNC"));
 
 program.name("chainsync").version("1.0.0").description("CHAIN SYNC");
 
-// generate: generate merkle tree and add to dataset
+// run: run the sync process between state and networks
 program
-  .command("sync")
-  .description("chain sync")
-  .option(
-    "-f, --file <path>",
-    "Location of the state file",
-    "./registry/global/state.json"
-  )
+  .command("run")
+  .description("chain sync run")
+  .option("-s, --state <path>", "Location of state files", "./registry/global")
   .action((options) => {
-    runSync(options.file);
+    runSync(options.state);
   })
   .addHelpText(
     "after",
     `
   Examples:
-    $ chainsync sync -f ./registry/global/state.json`
+    $ chainsync run -s ./registry/global`
   );
 
 program.parse(process.argv);
