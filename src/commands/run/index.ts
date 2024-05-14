@@ -1,35 +1,17 @@
 import * as fs from "fs";
-import { createWalletClient, Hex, http, publicActions } from "viem";
+import { createWalletClient, http, publicActions, defineChain } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { baseSepolia } from "viem/chains";
+import { getStatePaths } from "../../utils";
 
 async function runSync(stateDir: string) {
-  const stateFile = stateDir + "/state.json";
-  console.log("Reading state.json from: " + stateFile);
+  const { stateJsonPath, artifactsDirPath, logDirPath } =
+    getStatePaths(stateDir);
 
-  // directories and files
-  // const stateDir = require("path").dirname(stateDir);
-  const artifactsDir = stateDir + "/artifacts";
-  const logDir = stateDir + "/log";
+  const stateJson = JSON.parse(fs.readFileSync(stateJsonPath, "utf8"));
+  console.log("Read state.json from: " + stateJsonPath);
 
-  // read the state.json
-  const state = JSON.parse(fs.readFileSync(stateFile, "utf8"));
-
-  // active contracts
-  const activeContracts = state.contracts.active;
-
-  // archived contracts
-  const archivedContracts = state.contracts.archive;
-
-  // artifacts
-  // @ts-ignore
-  const artifactDetails = state.info.artifacts.map((artifactName) => {
-    const artifactPath = artifactsDir + `/${artifactName}.json`;
-    console.log("Reading artifact info from: " + artifactPath);
-    return JSON.parse(fs.readFileSync(artifactPath, "utf8"));
-  });
-
-  const networks = state.info.networks;
+  const activeContracts = stateJson.contracts.active;
+  const networks = stateJson.info.networks;
 
   const runPrivateKey = process.env.RUN_PRIVATE_KEY;
   const alchemyAPIKey = process.env.RUN_ALCHEMY_API_KEY;
@@ -44,63 +26,120 @@ async function runSync(stateDir: string) {
 
   // Create a wallet client with run private key
   const account = privateKeyToAccount(`0x${runPrivateKey}`);
-  const client = createWalletClient({
-    account: account,
-    chain: baseSepolia,
-    transport: http(),
-  }).extend(publicActions);
 
-  // const blockNumber = await client.getBlockNumber();
-  // console.log(`Current block number: ${blockNumber}`);
+  // ignore all draft contracts
 
-  // deploy the contract
-  // command to deploy a contract with viem
+  // read all active contracts and collect all undeployed contracts
+  let undeployedContract: any = null;
+  for (const contract of activeContracts) {
+    if (contract.address === "") {
+      undeployedContract = contract;
 
-  const [address] = await client.getAddresses();
+      const chainInfo = networks.find(
+        (net: any) => net.network === undeployedContract.network_name
+      );
+      if (!chainInfo) {
+        console.error(
+          `Network details for ${undeployedContract.network_name} not found.`
+        );
+        return;
+      }
 
-  // Extract the ABI from the artifact details for 'gw01.json'
-  // @ts-ignore
-  const gw01Artifact = artifactDetails.find((artifact) =>
-    artifact.repo_url.includes("game-wallet")
-  );
-  if (!gw01Artifact) {
-    console.error("gw01.json artifact details not found.");
-    return;
+      const chainConfig = defineChain({
+        id: chainInfo.chainId,
+        name: chainInfo.name,
+        network: chainInfo.network,
+        nativeCurrency: {
+          decimals: chainInfo.currencyDecimals,
+          name: chainInfo.currencyName,
+          symbol: chainInfo.currencySymbol,
+        },
+        rpcUrls: {
+          default: {
+            http: [chainInfo.rpcUrlHTTP],
+            webSocket: [chainInfo.rpcUrlWS],
+          },
+          public: {
+            http: [chainInfo.rpcUrlHTTP],
+            webSocket: [chainInfo.rpcUrlWS],
+          },
+        },
+        blockExplorers: {
+          default: {
+            name: "Explorer",
+            url: chainInfo.blockExplorer,
+          },
+        },
+      });
+
+      const client = createWalletClient({
+        account: account,
+        chain: chainConfig,
+        transport: http(),
+      }).extend(publicActions);
+
+      console.log(
+        `Preparing to deploy contract: ${undeployedContract.name} to ${chainConfig.network}`
+      );
+
+      // Resolve constructor arguments
+      const constructorArgs = undeployedContract.constructor_args.map(
+        (arg: any) => {
+          const [group, key] = arg.split(":");
+          if (
+            !stateJson.info.values[group] ||
+            !stateJson.info.values[group][key]
+          ) {
+            throw new Error(
+              `Missing value for group: ${group} and key: ${key}`
+            );
+          }
+          return stateJson.info.values[group][key];
+        }
+      );
+
+      try {
+        console.log(
+          `Deploying contract: ${undeployedContract.name} with args: ${constructorArgs}`
+        );
+
+        // prompt a deployment confirmation
+        // estimate gas
+
+        // @ts-ignore
+        const artifactJsonPath = `${artifactsDirPath}/${undeployedContract.artifact}.json`;
+        console.log(`Loading artifact from: ${artifactJsonPath}`);
+        const artifact = JSON.parse(fs.readFileSync(artifactJsonPath, "utf8"));
+        if (!artifact || !artifact.abi || !artifact.bytecode) {
+          throw new Error(
+            `Failed to load artifact or missing ABI/bytecode for ${undeployedContract.artifact}`
+          );
+        }
+
+        // @ts-ignore
+        const hash = await client.deployContract({
+          abi: artifact.abi,
+          account: account,
+          bytecode: artifact.bytecode.object,
+          args: constructorArgs,
+        });
+        const transaction = await client.waitForTransactionReceipt({
+          hash: hash,
+        });
+
+        // record the contract address of the deployed contract
+        console.log(
+          `Deployed at txn: https://sepolia.basescan.org/address/${transaction.contractAddress}`
+        );
+
+        // after success, save the contract address back to state.json
+      } catch (error: any) {
+        console.error(
+          `Error deploying contract ${undeployedContract.name}: ${error.message}`
+        );
+      }
+    }
   }
-  const gw01Abi = gw01Artifact.abi;
-  const gw01Bytecode = gw01Artifact.bytecode.object;
-  if (!gw01Abi) {
-    console.error("ABI for gw01.json is missing.");
-    return;
-  }
-  console.log("Successfully retrieved ABI for gw01.json.");
-
-  const hash = await client.deployContract({
-    abi: gw01Abi,
-    account: account,
-    bytecode: gw01Bytecode,
-    args: ["0x036CbD53842c5426634e7929541eC2318f3dCF7e", 1000000000, 60],
-  });
-  const transaction = await client.waitForTransactionReceipt({
-    hash: hash,
-  });
-
-  // record the contract address of the deployed contract
-  console.log(
-    `Deployed at txn: https://sepolia.basescan.org/address/${transaction.contractAddress}`
-  );
-
-  // update state file
-
-  // come up with a check to skip deployment on the same state file
-
-  // record output:
-  // - save run log as a file
-
-  // run auth configuration by executing function
-  // look at cannon invoke
-
-  // ability to loop
 }
 
 export { runSync };

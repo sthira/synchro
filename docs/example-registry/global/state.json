@@ -1,0 +1,94 @@
+{
+  "contracts": {
+    "draft": [],
+    "active": [
+      {
+        "name": "game-wallet-08",
+        "network_name": "base-sepolia",
+        "artifact": "gw01",
+        "address": "0x99ed35c6dfa2103fa973e705df118cdf653d07b6",
+        "constructor_args": [
+          "group01:usdc_base_sepolia",
+          "group02:1000_usdc_amount",
+          "group02:testnet_withdrawal_delay"
+        ]
+      },
+      {
+        "name": "game-wallet-09",
+        "network_name": "base-sepolia",
+        "artifact": "gw01",
+        "address": "0xd1ab8b55e6577ca9c90ca09dca1a23ce5f93a721",
+        "constructor_args": [
+          "group01:usdc_base_sepolia",
+          "group02:1000_usdc_amount",
+          "group02:testnet_withdrawal_delay"
+        ]
+      },
+      {
+        "name": "game-wallet-11",
+        "network_name": "base-sepolia",
+        "artifact": "gw01",
+        "address": "0x902f601304e7e5343cc2118eee069c25182075d2",
+        "constructor_args": [
+          "group01:usdc_base_sepolia",
+          "group02:1000_usdc_amount",
+          "group02:testnet_withdrawal_delay"
+        ]
+      },
+      {
+        "name": "game-wallet-12",
+        "network_name": "base-sepolia",
+        "artifact": "gw01",
+        "address": "0x893e5e09fc09dbbac6f6c66bcf954af69f0bf613",
+        "constructor_args": [
+          "group01:usdc_base_sepolia",
+          "group02:1000_usdc_amount",
+          "group02:testnet_withdrawal_delay"
+        ]
+      }
+    ],
+    "archive": []
+  },
+  "info": {
+    "values": {
+      "group01": {
+        "usdc_base_sepolia": "0x036CbD53842c5426634e7929541eC2318f3dCF7e"
+      },
+      "group02": {
+        "1000_usdc_amount": 1000000000,
+        "testnet_withdrawal_delay": 60
+      },
+      "group03": {
+        "admin_testnet": "0x7Fb80DE057D1735E998e092310F2bbaB85e341F0",
+        "txn_submitters_testnet": [
+          "0x7Fb80DE057D1735E998e092310F2bbaB85e341F0",
+          "0x4FbFfad410eb3e52EC3351DDf4dcaa6B43bA26eB"
+        ]
+      }
+    },
+    "networks": [
+      {
+        "network": "base-mainnet",
+        "name": "Base",
+        "chainId": 8453,
+        "currencyDecimals": 18,
+        "currencyName": "Ether",
+        "currencySymbol": "ETH",
+        "rpcUrlHTTP": "https://base-mainnet.g.alchemy.com/v2/NKkm5kPbkcL7gGSNCqt77mKicbpfoS5s",
+        "rpcUrlWS": "wss://base-mainnet.g.alchemy.com/v2/NKkm5kPbkcL7gGSNCqt77mKicbpfoS5s",
+        "blockExplorer": "https://base.blockscout.com/"
+      },
+      {
+        "network": "base-sepolia",
+        "name": "Base Sepolia",
+        "chainId": 84532,
+        "currencyDecimals": 18,
+        "currencyName": "Sepolia Ether",
+        "currencySymbol": "ETH",
+        "rpcUrlHTTP": "https://base-sepolia.g.alchemy.com/v2/985pbGNSbeEru5X44tyV0USAgHQ7hSVD",
+        "rpcUrlWS": "wss://base-sepolia.g.alchemy.com/v2/985pbGNSbeEru5X44tyV0USAgHQ7hSVD",
+        "blockExplorer": "https://base-sepolia.blockscout.com/"
+      }
+    ]
+  }
+}
