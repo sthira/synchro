@@ -1,6 +1,6 @@
-# Chain Sync
+# Synchro
 
-Chain Sync CLI Tool
+deploy and configure smart contracts by editing state files
 
 ## Installation and Setup
 
@@ -20,5 +20,5 @@ export RUN_ALCHEMY_API_KEY=<your alchemy api key>
 
 ```bash
 cd game-wallet
-chainsync sync -f ./registry/global/state.json
+synchro run -s ./registry/global
 ```

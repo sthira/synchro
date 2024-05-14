@@ -1,10 +1,10 @@
 {
-  "name": "chain-sync",
+  "name": "synchro",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
   "bin": {
-    "chainsync": "./dist/index.js"
+    "synchro": "./dist/index.js"
   },
   "scripts": {
     "build": "npx tsc",
@@ -12,7 +12,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@pinata/sdk": "^2.1.0",
     "axios": "^1.6.8",

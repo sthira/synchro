@@ -10,14 +10,14 @@ import { runCopy } from "./commands/copy";
 
 const program = new Command();
 
-console.log(figlet.textSync("CHAIN SYNC"));
+console.log(figlet.textSync("SYNCHRO"));
 
-program.name("chainsync").version("1.0.0").description("CHAIN SYNC");
+program.name("synchro").version("1.0.0").description("SYNCHRO");
 
 // run: run the sync process between state and networks
 program
   .command("run")
-  .description("chain sync run")
+  .description("synchro run")
   .option("-s, --state <path>", "Location of state files")
   .action((options) => {
     runSync(options.state);
@@ -26,13 +26,13 @@ program
     "after",
     `
   Examples:
-    $ chainsync run -s ./registry/global`
+    $ synchro run -s ./registry/global`
   );
 
 // copy: run the copy process
 program
   .command("copy")
-  .description("chain sync copy")
+  .description("synchro copy")
   .option("-f, --framework <forge|hardhat>", "Solidity framework", "forge")
   .option("-s, --state <path>", "Location of state files")
   .option("-a, --artifact <location>", "Artifact location")
@@ -54,7 +54,7 @@ program
     "after",
     `
   Examples:
-    $ chainsync copy -f forge -s ./registry/global -a ./out/GameWallet.sol/GameWallet.json -n GW02 -o`
+    $ synchro copy -f forge -s ./registry/global -a ./out/GameWallet.sol/GameWallet.json -n GW02 -o`
   );
 
 program.parse(process.argv);
