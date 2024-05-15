@@ -1,18 +1,31 @@
 {
-  "name": "synchro",
+  "name": "@sthira/synchro",
   "version": "1.0.0",
-  "description": "",
-  "main": "dist/index.js",
+  "description": "CLI tool to deploy and configure smart contracts with state files",
+  "main": "./dist/index.js",
   "bin": {
-    "synchro": "./dist/index.js"
+    "synchro": "dist/index.js"
   },
   "scripts": {
     "build": "npx tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sthira/synchro.git"
+  },
+  "keywords": [
+    "synchro",
+    "smart contracts",
+    "deployment",
+    "configuration"
+  ],
   "author": "",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sthira/synchro/issues"
+  },
+  "homepage": "https://github.com/sthira/synchro#readme",
   "dependencies": {
     "@pinata/sdk": "^2.1.0",
     "axios": "^1.6.8",
