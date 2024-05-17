@@ -32,51 +32,53 @@ async function runSync(stateDir: string) {
   // read all active contracts and collect all undeployed contracts
   let undeployedContract: any = null;
   for (const contract of activeContracts) {
+    // Step 0: Setup
+    // create client to interact with the network of the contract
+    const chainInfo = networks.find(
+      (net: any) => net.network === contract.network_name
+    );
+    if (!chainInfo) {
+      console.error(`Network details for ${contract.network_name} not found.`);
+      return;
+    }
+
+    const chainConfig = defineChain({
+      id: chainInfo.chainId,
+      name: chainInfo.name,
+      network: chainInfo.network,
+      nativeCurrency: {
+        decimals: chainInfo.currencyDecimals,
+        name: chainInfo.currencyName,
+        symbol: chainInfo.currencySymbol,
+      },
+      rpcUrls: {
+        default: {
+          http: [chainInfo.rpcUrlHTTP],
+          webSocket: [chainInfo.rpcUrlWS],
+        },
+        public: {
+          http: [chainInfo.rpcUrlHTTP],
+          webSocket: [chainInfo.rpcUrlWS],
+        },
+      },
+      blockExplorers: {
+        default: {
+          name: "Explorer",
+          url: chainInfo.blockExplorer,
+        },
+      },
+    });
+
+    const client = createWalletClient({
+      account: account,
+      chain: chainConfig,
+      transport: http(),
+    }).extend(publicActions);
+
+    // Step 1: Contract Deployment
+    // deploy contract first if it has not been deployed
     if (contract.address === "") {
       undeployedContract = contract;
-
-      const chainInfo = networks.find(
-        (net: any) => net.network === undeployedContract.network_name
-      );
-      if (!chainInfo) {
-        console.error(
-          `Network details for ${undeployedContract.network_name} not found.`
-        );
-        return;
-      }
-
-      const chainConfig = defineChain({
-        id: chainInfo.chainId,
-        name: chainInfo.name,
-        network: chainInfo.network,
-        nativeCurrency: {
-          decimals: chainInfo.currencyDecimals,
-          name: chainInfo.currencyName,
-          symbol: chainInfo.currencySymbol,
-        },
-        rpcUrls: {
-          default: {
-            http: [chainInfo.rpcUrlHTTP],
-            webSocket: [chainInfo.rpcUrlWS],
-          },
-          public: {
-            http: [chainInfo.rpcUrlHTTP],
-            webSocket: [chainInfo.rpcUrlWS],
-          },
-        },
-        blockExplorers: {
-          default: {
-            name: "Explorer",
-            url: chainInfo.blockExplorer,
-          },
-        },
-      });
-
-      const client = createWalletClient({
-        account: account,
-        chain: chainConfig,
-        transport: http(),
-      }).extend(publicActions);
 
       console.log(
         `Preparing to deploy contract: ${undeployedContract.name} to ${chainConfig.network}`
@@ -139,6 +141,13 @@ async function runSync(stateDir: string) {
         );
       }
     }
+
+    // Step 2: Contract Configuration
+    console.log(
+      `Preparing to run configuration of : ${contract.name} deployed on ${chainConfig.network}`
+    );
+
+    //
   }
 }
 

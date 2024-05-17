@@ -6,7 +6,7 @@
         "name": "game-wallet-08",
         "network_name": "base-sepolia",
         "artifact": "gw01",
-        "address": "0x99ed35c6dfa2103fa973e705df118cdf653d07b6",
+        "address": "0xd389648045c4fb0298ae00320d7150d205d3da5a",
         "constructor_args": [
           "group01:usdc_base_sepolia",
           "group02:1000_usdc_amount",
@@ -22,6 +22,28 @@
           "group01:usdc_base_sepolia",
           "group02:1000_usdc_amount",
           "group02:testnet_withdrawal_delay"
+        ],
+        "config": [
+          {
+            "name": "transaction_submitters",
+            "transition": {
+              "value_type": "address",
+              "current": ["0x0", "0x1"],
+              "next": ["0x0", "0x1"]
+            },
+            "updateStrategy": {
+              "add": {
+                "function_sig": "grantRole(bytes32 role, address account)",
+                "role": "TXN_SUBMITTER_ROLE",
+                "account": ""
+              },
+              "remove": {
+                "function_sig": "revokeRole(bytes32 role, address account)",
+                "role": "TXN_SUBMITTER_ROLE",
+                "account": ""
+              }
+            }
+          }
         ]
       },
       {
