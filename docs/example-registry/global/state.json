@@ -3,21 +3,10 @@
     "draft": [],
     "active": [
       {
-        "name": "game-wallet-08",
-        "network_name": "base-sepolia",
-        "artifact": "gw01",
-        "address": "0xd389648045c4fb0298ae00320d7150d205d3da5a",
-        "constructor_args": [
-          "group01:usdc_base_sepolia",
-          "group02:1000_usdc_amount",
-          "group02:testnet_withdrawal_delay"
-        ]
-      },
-      {
         "name": "game-wallet-09",
         "network_name": "base-sepolia",
         "artifact": "gw01",
-        "address": "0xd1ab8b55e6577ca9c90ca09dca1a23ce5f93a721",
+        "address": "0x17bbe92ed87169fb132024b23da0ac8045449dd8",
         "constructor_args": [
           "group01:usdc_base_sepolia",
           "group02:1000_usdc_amount",
@@ -27,20 +16,17 @@
           {
             "name": "transaction_submitters",
             "transition": {
-              "value_type": "address",
-              "current": ["0x0", "0x1"],
-              "next": ["0x0", "0x1"]
+              "current": ["group03:testnet_txn_submitter01"],
+              "next": ["group03:testnet_txn_submitter01"]
             },
             "updateStrategy": {
               "add": {
                 "function_sig": "grantRole(bytes32 role, address account)",
-                "role": "TXN_SUBMITTER_ROLE",
-                "account": ""
+                "args": ["group04:txn_submitter_role", "_"]
               },
               "remove": {
                 "function_sig": "revokeRole(bytes32 role, address account)",
-                "role": "TXN_SUBMITTER_ROLE",
-                "account": ""
+                "args": ["group04:txn_submitter_role", "_"]
               }
             }
           }
@@ -55,17 +41,85 @@
           "group01:usdc_base_sepolia",
           "group02:1000_usdc_amount",
           "group02:testnet_withdrawal_delay"
+        ],
+        "config": [
+          {
+            "name": "transaction_submitters",
+            "transition": {
+              "current": ["group03:testnet_txn_submitter01"],
+              "next": ["group03:testnet_txn_submitter01"]
+            },
+            "updateStrategy": {
+              "add": {
+                "function_sig": "grantRole(bytes32 role, address account)",
+                "args": ["group04:txn_submitter_role", "_"]
+              },
+              "remove": {
+                "function_sig": "revokeRole(bytes32 role, address account)",
+                "args": ["group04:txn_submitter_role", "_"]
+              }
+            }
+          }
         ]
       },
       {
-        "name": "game-wallet-12",
+        "name": "game-wallet-04",
         "network_name": "base-sepolia",
         "artifact": "gw01",
-        "address": "0x893e5e09fc09dbbac6f6c66bcf954af69f0bf613",
+        "address": "0x70f560570cd0056cee6002e81be68f9a7e1c503d",
         "constructor_args": [
           "group01:usdc_base_sepolia",
           "group02:1000_usdc_amount",
           "group02:testnet_withdrawal_delay"
+        ],
+        "config": [
+          {
+            "name": "transaction_submitters",
+            "transition": {
+              "current": ["group03:testnet_txn_submitter02"],
+              "next": ["group03:testnet_txn_submitter02"]
+            },
+            "updateStrategy": {
+              "add": {
+                "function_sig": "grantRole(bytes32 role, address account)",
+                "args": ["group04:txn_submitter_role", "_"]
+              },
+              "remove": {
+                "function_sig": "revokeRole(bytes32 role, address account)",
+                "args": ["group04:txn_submitter_role", "_"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "game-wallet-05",
+        "network_name": "base-sepolia",
+        "artifact": "gw01",
+        "address": "0x9b9f56bd8b7c5247fdf7133c0e77dde5bb97a126",
+        "constructor_args": [
+          "group01:usdc_base_sepolia",
+          "group02:1000_usdc_amount",
+          "group02:testnet_withdrawal_delay"
+        ],
+        "config": [
+          {
+            "name": "transaction_submitters",
+            "transition": {
+              "current": [],
+              "next": []
+            },
+            "updateStrategy": {
+              "add": {
+                "function_sig": "grantRole(bytes32 role, address account)",
+                "args": ["group04:txn_submitter_role", "_"]
+              },
+              "remove": {
+                "function_sig": "revokeRole(bytes32 role, address account)",
+                "args": ["group04:txn_submitter_role", "_"]
+              }
+            }
+          }
         ]
       }
     ],
@@ -81,11 +135,14 @@
         "testnet_withdrawal_delay": 60
       },
       "group03": {
-        "admin_testnet": "0x7Fb80DE057D1735E998e092310F2bbaB85e341F0",
-        "txn_submitters_testnet": [
-          "0x7Fb80DE057D1735E998e092310F2bbaB85e341F0",
-          "0x4FbFfad410eb3e52EC3351DDf4dcaa6B43bA26eB"
-        ]
+        "testnet_admin01": "0x7Fb80DE057D1735E998e092310F2bbaB85e341F0",
+        "testnet_txn_submitter01": "0x7Fb80DE057D1735E998e092310F2bbaB85e341F0",
+        "testnet_txn_submitter02": "0x4FbFfad410eb3e52EC3351DDf4dcaa6B43bA26eB",
+        "testnet_txn_submitter03": "0x1111111111111111111111111111111111111111",
+        "testnet_txn_submitter04": "0x2222222222222222222222222222222222222222"
+      },
+      "group04": {
+        "txn_submitter_role": "0xe36dd3d438139416652addc594300757f3bf91ccb298951da2b3fc7876a7ce1d"
       }
     },
     "networks": [
