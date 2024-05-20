@@ -1,0 +1,39 @@
+{
+  "contracts": {
+    "draft": [],
+    "active": [],
+    "archive": []
+  },
+  "info": {
+    "values": {
+      "group01": {
+        "mainnet_admin01": "0x7Fb80DE057D1735E998e092310F2bbaB85e341F0"
+      },
+      "group02": {
+        "number_role": "0x4e554d4245525f524f4c455f4f50455241544f52000000000000000000000000",
+        "string_role": "0x535452494e475f524f4c455f4f50455241544f52000000000000000000000000",
+        "mainnet_operator01": "0x1111111111111111111111111111111111111111",
+        "mainnet_operator02": "0x2222222222222222222222222222222222222222"
+      },
+      "group03": {
+        "number_4567": 4567,
+        "number_10000": 10000,
+        "string_hello": "hello",
+        "string_world": "world"
+      }
+    },
+    "networks": [
+      {
+        "network": "base-mainnet",
+        "name": "Base",
+        "chainId": 8453,
+        "currencyDecimals": 18,
+        "currencyName": "Ether",
+        "currencySymbol": "ETH",
+        "rpcUrlHTTP": "https://base-mainnet.g.alchemy.com/v2/NKkm5kPbkcL7gGSNCqt77mKicbpfoS5s",
+        "rpcUrlWS": "wss://base-mainnet.g.alchemy.com/v2/NKkm5kPbkcL7gGSNCqt77mKicbpfoS5s",
+        "blockExplorer": "https://base.blockscout.com/"
+      }
+    ]
+  }
+}

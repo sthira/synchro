@@ -19,31 +19,17 @@ async function runCopy(
     return;
   }
 
-  const stateData = JSON.parse(
-    fs.readFileSync(statePath + "/state.json", "utf8")
-  );
-  const stateFile = statePath + "/state.json";
-
-  const artifactExists = stateData.info.artifacts.includes(artifactName);
-
-  if (!artifactExists) {
-    stateData.info.artifacts.push(artifactName);
-    fs.writeFileSync(stateFile, JSON.stringify(stateData, null, 2));
-    console.log(
-      `Artifact ${artifactName} added to the state.json artifacts list.`
-    );
-  } else if (artifactExists && !artifactOverwrite) {
-    console.error(
-      `Artifact with name ${artifactName} already exists in the state.json artifacts list. Use --overwrite to overwrite.`
-    );
-    return;
-  } else {
-    console.log(
-      `Artifact with name ${artifactName} is updated in the state.json artifacts list.`
-    );
-  }
-
   const artifactFilePath = `${statePath}/artifacts/${artifactName}.json`;
+  if (fs.existsSync(artifactFilePath)) {
+    if (artifactOverwrite) {
+      console.log(`Overwriting existing artifact at ${artifactFilePath}`);
+    } else {
+      console.error(
+        `Artifact already exists at ${artifactFilePath} and overwrite is not enabled.`
+      );
+      return;
+    }
+  }
 
   let artifactAbi;
   let artifactBytecode;
